@@ -96,8 +96,8 @@
         </div>
         
         {# Sidebar #}
-        {% include 'components/_sidebar.html.twig' %}
-        
+        {#{% include 'components/_sidebar.html.twig' %}#}
+        {{ render(controller('App\\Controller\\TechNews\\IndexController:sidebar')) }}
     </div>
 {% endblock %}
 

@@ -1,3 +1,6 @@
+{#{{ dump(articles) }}#}
+{#{{ dump(specials) }}#}
+
 <!--colright-->
 <div class="col-md-4 col-sm-12">
     <!--tab popular-->
@@ -11,82 +14,28 @@
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="tab1">
             <ul class="list-news-popular">
-                <li>
-                    <a href="#">
-                        <img alt="" src="images/product/8.jpg">
-                    </a>
-                    <h3><a href="#">Netflix Speeds Jumped 51% This Year</a></h3>
-                    <div class="meta-post">
+                {% for article in  articles %}
+                    <li>
                         <a href="#">
-                            Ashley Ford
+                            <img alt="{{ article.titre }}" src="{{ asset('images/product/'~article.featuredimage) }}">
+                        </a>
+                        <h3><a href="{{ path('index_article', {
+                                categorie: article.categorie.slug,
+                                slug: article.slug,
+                                id: article.id
+                            }) }}">{{ article.titre | title}}</a></h3>
+                        <div class="meta-post">
+                            <a href="#">
+                                {{ article.membre.prenom ~ ' ' ~ article.membre.nom }}
+                            </a>
+                            <em></em>
+                            <span>
+                                {{ article.datecreation | date('d/m/Y') }}
+                            </span>
+                        </div>
+                    </li>
+                {% endfor %}
 
-                        </a>
-                        <em></em>
-                        <span>
-							24 Aug  2016
-						</span>
-                    </div>
-                </li>
-                <li>
-                    <a href="#">
-                        <img alt="" src="images/product/9.jpg">
-                    </a>
-                    <h3><a href="#">Uber wants to build planes to beat city traffic</a></h3>
-                    <div class="meta-post">
-                        <a href="#">
-                            Karla	Walters
-                        </a>
-                        <em></em>
-                        <span>
-							04 Sep  2016
-						</span>
-                    </div>
-                </li>
-                <li>
-                    <a href="#">
-                        <img alt="" src="images/product/10.jpg">
-                    </a>
-                    <h3><a href="#">Apple reportedly prototyping their Amazon Echo competitor</a></h3>
-                    <div class="meta-post">
-                        <a href="#">
-                            Super User
-                        </a>
-                        <em></em>
-                        <span>
-							01 Sep  2016
-						</span>
-                    </div>
-                </li>
-                <li>
-                    <a href="#">
-                        <img alt="" src="images/product/11.jpg">
-                    </a>
-                    <h3><a href="#">Watch out: That USB stick in your mailbox might be infected</a></h3>
-                    <div class="meta-post">
-                        <a href="#">
-                            Sue	Benson
-                        </a>
-                        <em></em>
-                        <span>
-							27 Aug  2016
-						</span>
-                    </div>
-                </li>
-                <li>
-                    <a href="#">
-                        <img alt="" src="images/product/13.jpg">
-                    </a>
-                    <h3><a href="#">Tumblr brings Apple’s ‘Live Photos’ to the web</a></h3>
-                    <div class="meta-post">
-                        <a href="#">
-                            Super User
-                        </a>
-                        <em></em>
-                        <span>
-							15 Sep 2016
-						</span>
-                    </div>
-                </li>
             </ul>
 
         </div>

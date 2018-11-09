@@ -6,10 +6,9 @@ namespace App\Controller\TechNews;
 use App\Article\Provider\YamlProvider;
 use App\Entity\Article;
 use App\Entity\Categorie;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends Controller
 {
@@ -122,4 +121,23 @@ class IndexController extends Controller
             'suggestions' => $suggestions
         ]);
     }
+
+    public function sidebar()
+    {
+        # Récupération du Repository
+        $repository = $this->getDoctrine()
+            ->getRepository(Article::class);
+
+        # Récuperer les 5 derniers articles
+        $articles = $repository->findLatestArticles();
+
+        # Récupérer les articles à la positions "special"
+        $specials = $repository->findSpecialArticles();
+
+        return $this->render('components/_sidebar.html.twig', [
+            "articles" => $articles,
+            "specials" => $specials
+        ]);
+    }
+
 }

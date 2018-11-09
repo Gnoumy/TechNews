@@ -34,11 +34,11 @@
                 <span>MENU</span>
             </div>
             <ul class="hidden-sm hidden-xs">
-                <li>
+                <li  {% if active == 'index' %} class="current" {% endif %} >
                     <a href="{{ path('index') }}">Accueil </a>
                 </li>
                 {% for categorie in  categories %}
-                    <li>
+                    <li {{ active == categorie.slug ? "class = current" }} >
                         <a href="{{ path('index_categorie', {
                             slug: categorie.slug
                         }) }}">{{ categorie.nom }}</a>
