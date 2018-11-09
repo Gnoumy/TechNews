@@ -1,0 +1,83 @@
+{% extends 'layout.html.twig' %}
+
+{% block page_title %}
+    {{ categorie.nom | title }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <!--colleft-->
+        <div class="col-md-8 col-sm-12">
+
+            {% if articles is not empty %}
+                <div class="box-caption">
+                    <span>{{ categorie.nom | title }}</span>
+                    {#<span>{{ articles[0].categorie.nom | title }}</span>#}
+                    {#<span>{{ app.request.get('slug') | title }}</span>#}
+                </div>
+                {#{{ dump(app.request) }}#}
+                <!--list-news-cate-->
+                <div class="list-news-cate">
+                    {% for article in articles %}
+
+                        <article class="news-cate-item">
+                            <div class="row">
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <a href="{{ path('index_article', {
+                                        categorie: article.categorie.slug,
+                                        slug: article.slug,
+                                        id: article.id
+                                    }) }}">
+                                        <img alt="{{ article.titre | title }}"
+                                             src="{{ asset('images/product/'~article.featuredImage) }}">
+                                    </a>
+                                </div>
+                                <div class="col-md-7 col-sm-7 col-xs-12">
+                                    <h3><a href="{{ path('index_article', {
+                                            categorie: article.categorie.slug,
+                                            slug: article.slug,
+                                            id: article.id
+                                        }) }}">{{ article.titre | title }}</a></h3>
+                                    <div class="meta-post">
+                                        <a href="#">
+                                            {{ article.membre.prenom ~ ' ' ~ article.membre.nom }}
+                                        </a>
+                                        <em></em>
+                                        <span>
+                                        {{ article.dateCreation | date('d/m/Y') }}
+                                    </span>
+                                    </div>
+                                    {# ici repose une accroche #}
+                                </div>
+                            </div>
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-danger">
+                    <strong>Aucune publication pour le moment</strong>
+                </div>
+
+            {% endif %}
+
+            {#<div class="paging">
+                <a href="#">Prev</a>
+                <a href="#" class="current">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">Next</a>
+            </div>#}
+
+        </div>
+        {# Sidebar #}
+        {% include 'components/_sidebar.html.twig' %}
+    </div>
+{% endblock %}
+
+
