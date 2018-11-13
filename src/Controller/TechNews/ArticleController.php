@@ -3,25 +3,22 @@
 namespace App\Controller\TechNews;
 
 
+use App\Article\ArticleRequest;
+use App\Article\ArticleRequestHandler;
+use App\Article\ArticleType;
 use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Entity\Membre;
 
 
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArticleController extends Controller
 {
+    use HelperTrait;
     /**
      * Démonstration de l'ajout d'une article avec Doctrine. (Data Mapper)
      * @Route("test/article/add", name="article_test")
@@ -74,68 +71,44 @@ class ArticleController extends Controller
     /**
      * Formulaire pour ajouter un article
      * @Route("creer-un-article", name="article_new")
+     * @param Request $request
+     * @param ArticleRequestHandler $articleRequestHandler
+     * @return Response
      */
-    public function newArticle()
+    public function newArticle(Request $request, ArticleRequestHandler $articleRequestHandler): Response
     {
         //Récupération de l'Auteur | ou en session
         $membre = $this->getDoctrine()
             ->getRepository(Membre::class)
             ->find(1);
-        //Création d'un Article
-        $article = new Article($membre);
 
-        $form = $this->createFormBuilder($article)
-            ->add('titre', TextType::class, [
-                'required'  => true,
-                'label'     => "Titre de l'article",
-                'attr'      => [
-                    'placeholder' => "Titre de l'Article"
-                ]])
-            ->add('categorie', EntityType::class, array(
-                'class'    => Categorie::class,
-                'choice_label'  => function (Categorie $categorie) {
-                    return $categorie->getNom();
-                }))
-            ->add('membre', EntityType::class, array(
-                'class'    => Membre::class,
-                'choice_label'  => function (Membre $categorie) {
-                    return $categorie->getNom();
-                }))
-            ->add('contenu', CKEditorType::class, [
-                'required'  => true,
-                'label'  => false,
-                'config' => [
-                    'toolbar' => 'standard'
-                ]
-            ])
-            ->add('featuredimage', FileType::class, [
-                'required'  => true,
-                'label'  => 'Choisir une image',
-                'attr' => [
-                    'class' => 'dropify'
-                ]])
-            ->add('special', CheckboxType::class, [
-                'required'  => false,
-                'attr' => [
-                    'data-toggle' => 'toggle',
-                    'data-on' => 'Oui',
-                    'data-off' => 'Non',
-//                    'checked' => true
-                ]])
-            ->add('spotlight', CheckboxType::class, [
-                'required'  => false,
-                'attr' => [
-                    'data-toggle' => 'toggle',
-                    'data-on' => 'Oui',
-                    'data-off' => 'Non',
-                ]])
-            ->add('submit', SubmitType::class, [
-                'label'  => 'Ajouter l\'article',
-                'attr'  => [
-                    'class' => 'btn btn-primary'
-                    ]
-            ])
-            ->getForm();
+        /**
+         * Une fois le formulaire soumit et validé
+         * on passe nos données directement au service
+         * qui se charge du traitement de l'article
+         */
+        $article = new ArticleRequest($membre);
+
+        $form = $this->createForm(ArticleType::class, $article)
+                ->handleRequest($request);
+
+        #Vérif des données du Formulaire
+        if ($form->isSubmitted() && $form->isValid()){
+
+            # Récupération des données ($article devient un objet)
+            $article = $articleRequestHandler->handle($article);
+
+            # Flash Messages
+            $this->addFlash('notice',
+                'Félicitations, votre article est en ligne');
+
+            # Redirection vers l'article
+            return $this->redirectToRoute('index_article', [
+                'categorie' => $article->getCategorie()->getSlug(),
+                'slug'      => $article->getSlug(),
+                'id'        => $article->getId()
+            ]);
+        }
 
         return $this->render("article/form.html.twig", [
             'form' => $form->createView()

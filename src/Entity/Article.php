@@ -67,11 +67,44 @@ class Article
 
     /**
      * Article constructor.
+     * @param $id
+     * @param $titre
+     * @param $slug
+     * @param $contenu
+     * @param $featuredImage
+     * @param $special
+     * @param $spotlight
+     * @param $categorie
+     * @param $membre
+     * @param $dateCreation
      */
-    public function __construct()
+    public function __construct($id=null,
+                                $titre,
+                                $slug,
+                                $contenu,
+                                $featuredImage,
+                                $special,
+                                $spotlight,
+                                $categorie,
+                                $membre)
     {
+        $this->id = $id;
+        $this->titre = $titre;
+        $this->slug = $slug;
+        $this->contenu = $contenu;
+        $this->featuredImage = $featuredImage;
+        $this->special = $special;
+        $this->spotlight = $spotlight;
+        $this->categorie = $categorie;
+        $this->membre = $membre;
         $this->dateCreation = new \DateTime();
+
     }
+
+    /**
+     * Article constructor.
+     */
+
 
 
     public function getId(): ?int

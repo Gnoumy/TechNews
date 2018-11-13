@@ -6,14 +6,16 @@
 
 {% block content %}
 
-    {#{{ dump(article) }}
-    {{ dump(article.membre.prenom) }}
-    {{ dump(article.categorie.nom) }}
-    {{ dump(suggestions) }}#}
-
     <div class="row">
         <!--colleft-->
         <div class="col-md-8 col-sm-12">
+
+            {% for message in app.flashes('notice') %}
+                <div class="alert alert-info">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
             <!--post-detail-->
             <article class="post-detail">
                 <h1>{{ article.titre | title }}</h1>
